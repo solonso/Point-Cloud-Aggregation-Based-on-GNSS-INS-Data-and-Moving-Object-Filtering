@@ -1,5 +1,8 @@
 # Point Cloud Aggregation Based on GNSS-INS Data and Moving Object Filtering
 
+## Name: Nwafor Solomon Chibuzo
+## Nuptun ID: UITK8W
+
 ## Project Overview
 
 This project processes multi-sensor data from a vehicle equipped with a top-mounted lidar, GNSS-INS system, and multiple cameras. The goal is to create a comprehensive static point cloud representation of the environment by aggregating lidar frames, filtering non-static objects, and colorizing the result using camera imagery.
@@ -9,7 +12,7 @@ All sensors are intrinsically and extrinsically calibrated, time-synchronized, a
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Complete Processing Pipeline                  │
+│                    Complete Processing Pipeline                 │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
@@ -33,7 +36,7 @@ All sensors are intrinsically and extrinsically calibrated, time-synchronized, a
                             ▼
                     ┌───────────────┐
                     │   Task 2:     │
-                    │   Filtering  │
+                    │   Filtering   │
                     │               │
                     │ Remove moving │
                     │ objects using │
@@ -98,14 +101,14 @@ Each lidar frame is transformed from the sensor coordinate system to the global 
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Task 1: Aggregation Flow                  │
+│                    Task 1: Aggregation Flow                 │
 └─────────────────────────────────────────────────────────────┘
 
 For each frame:
 ┌─────────────────────────────────────────────────────────────┐
-│                      Lidar Frame                             │
-│                   (Sensor coordinate system)                 │
-│                        Points                                │
+│                      Lidar Frame                            │
+│                   (Sensor coordinate system)                │
+│                        Points                               │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             │ Load: calibrated_sensor (extrinsics)
@@ -113,39 +116,39 @@ For each frame:
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              Build T_sensor_to_ego                           │
-│              (4x4 transformation)                            │
-│              R(q_sensor), t_sensor                           │
+│              Build T_sensor_to_ego                          │
+│              (4x4 transformation)                           │
+│              R(q_sensor), t_sensor                          │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              Build T_ego_to_global                           │
-│              (4x4 transformation)                            │
-│              R(q_ego), t_ego (GNSS-INS)                      │
+│              Build T_ego_to_global                          │
+│              (4x4 transformation)                           │
+│              R(q_ego), t_ego (GNSS-INS)                     │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              Apply Transformation to all points              │
-│              P_global = T_ego_to_global @                    │
-│                           T_sensor_to_ego @ P_sensor         │
+│              Apply Transformation to all points             │
+│              P_global = T_ego_to_global @                   │
+│                           T_sensor_to_ego @ P_sensor        │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              Accumulate in Global Point Cloud                │
-│              Concatenate all transformed points              │
+│              Accumulate in Global Point Cloud               │
+│              Concatenate all transformed points             │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                      Save PCD File                           │
-│              outputs/taask1_scene-XXX.pcd                    │
+│                      Save PCD File                          │
+│              outputs/taask1_scene-XXX.pcd                   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Mathematical Formulation
+### Formulation
 
 For each lidar frame at time t:
 
@@ -238,19 +241,19 @@ Clusters identified as vehicle-like are removed from the aggregated point cloud,
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│              Task 2: Moving Object Filtering Flow            │
+│              Task 2: Moving Object Filtering Flow           │
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
-│                   Aggregated Point Cloud                     │
-│                      (from Task 1)                           │
-│                      P = [x, y, z]                           │
+│                   Aggregated Point Cloud                    │
+│                      (from Task 1)                          │
+│                      P = [x, y, z]                          │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│            Step 1: Local Ground Height Estimation            │
-│                                                              │
+│            Step 1: Local Ground Height Estimation           │
+│                                                             │
 │  1. Divide XY into cells (0.4m x 0.4m)                      │
 │  2. For each cell:                                          │
 │     z_ground = percentile(z_points, 12%)                    │
@@ -260,16 +263,16 @@ Clusters identified as vehicle-like are removed from the aggregated point cloud,
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                Step 2: Height Band Filtering                 │
-│                                                              │
+│                Step 2: Height Band Filtering                │
+│                                                             │
 │  above_ground = h > 0.25m                                   │
 │  vehicle_band = (0.25m < h < 3.2m)                          │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                 Step 3: 2D DBSCAN Clustering                 │
-│                                                              │
+│                 Step 3: 2D DBSCAN Clustering                │
+│                                                             │
 │  1. Project to XY: pts_2d = [x, y, 0]                       │
 │  2. Cluster with DBSCAN:                                    │
 │     - eps = 0.65m                                           │
@@ -279,38 +282,38 @@ Clusters identified as vehicle-like are removed from the aggregated point cloud,
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              Step 4: Geometric Shape Analysis                │
-│                                                              │
+│              Step 4: Geometric Shape Analysis               │
+│                                                             │
 │  For each cluster:                                          │
 │    1. Compute bounding box:                                 │
 │       dims = [dx, dy, dz]                                   │
 │       length = max(dx, dy)                                  │
 │       width = min(dx, dy)                                   │
-│                                                              │
+│                                                             │
 │    2. Apply filters:                                        │
-│       ✓ Height: 0.25m <= dz <= 3.2m                        │
+│       ✓ Height: 0.25m <= dz <= 3.2m                         │
 │       ✓ Length: <= 15.0m                                    │
 │       ✓ Width: <= 5.0m                                      │
 │       ✓ Points: >= 25                                       │
-│                                                              │
+│                                                             │
 │    3. Reject walls:                                         │
-│       ✗ Long & thin: length >= 6.0m                        │
+│       ✗ Long & thin: length >= 6.0m                         │
 │         AND width <= 0.35m                                  │
-│       ✗ Ratio: length/width >= 18.0                        │
-│       ✗ Long low: length > 12.0m                           │
+│       ✗ Ratio: length/width >= 18.0                         │
+│       ✗ Long low: length > 12.0m                            │
 │         AND dz < 1.5m                                       │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                       Filtered Mask                          │
-│                                                              │
+│                       Filtered Mask                         │
+│                                                             │
 │  moving_mask: True for vehicle clusters                     │
 │  static_mask: ~moving_mask                                  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Mathematical Formulation
+### Formulation
 
 #### Step 1: Local Ground Height Estimation
 
@@ -441,15 +444,15 @@ The colorization process:
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
-│                     Static Point Cloud                       │
-│        (from Task 2, moving objects removed)                 │
-│                   P_world = [x, y, z]                        │
+│                     Static Point Cloud                      │
+│        (from Task 2, moving objects removed)                │
+│                   P_world = [x, y, z]                       │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                  Initialize Color Arrays                     │
-│                                                              │
+│                  Initialize Color Arrays                    │
+│                                                             │
 │  colors = zeros(N, 3)                                       │
 │  best_dist = inf(N)                                         │
 └───────────────────────────┬─────────────────────────────────┘
@@ -460,14 +463,14 @@ The colorization process:
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│            Step 1: Build Camera Transformation               │
-│                                                              │
+│            Step 1: Build Camera Transformation              │
+│                                                             │
 │  1. Get camera calibration:                                 │
 │     T_cam_to_vehicle, K (intrinsics)                        │
-│                                                              │
+│                                                             │
 │  2. Get ego pose:                                           │
 │     T_vehicle_to_world                                      │
-│                                                              │
+│                                                             │
 │  3. Compute:                                                │
 │     T_world_to_cam =                                        │
 │       (T_vehicle_to_world @                                 │
@@ -476,17 +479,17 @@ The colorization process:
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│             Step 2: Project 3D Points to Image               │
-│                                                              │
+│             Step 2: Project 3D Points to Image              │
+│                                                             │
 │  For each point P_world:                                    │
 │    1. Transform to camera frame:                            │
 │       P_cam = T_world_to_cam @ P_world                      │
-│                                                              │
+│                                                             │
 │    2. Project to image:                                     │
 │       [u', v', w'] = K @ P_cam                              │
 │       u = u' / w'                                           │
 │       v = v' / w'                                           │
-│                                                              │
+│                                                             │
 │    3. Check validity:                                       │
 │       valid = (w' > 0) AND                                  │
 │               (0 <= u < width) AND                          │
@@ -495,8 +498,8 @@ The colorization process:
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              Step 3: Sample Colors from Image                │
-│                                                              │
+│              Step 3: Sample Colors from Image               │
+│                                                             │
 │  For valid points:                                          │
 │    color = image[round(v), round(u), :]                     │
 │    if max(color) > 1.0:                                     │
@@ -505,11 +508,11 @@ The colorization process:
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                 Step 4: Select Best Color                    │
-│                                                              │
+│                 Step 4: Select Best Color                   │
+│                                                             │
 │  For each point:                                            │
 │    distance = ||P_world - cam_position||                    │
-│                                                              │
+│                                                             │
 │    if (valid AND distance < best_dist):                     │
 │        colors[point] = sampled_color                        │
 │        best_dist[point] = distance                          │
@@ -519,13 +522,13 @@ The colorization process:
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                Colored Static Point Cloud                    │
-│                                                              │
-│  Points with RGB colors from nearest visible camera          │
+│                Colored Static Point Cloud                   │
+│                                                             │
+│  Points with RGB colors from nearest visible camera         │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Mathematical Formulation
+### Formulation
 
 #### Step 1: Camera Transformation Matrix
 
@@ -673,7 +676,7 @@ Execute tasks sequentially:
 
 ```bash
 # Task 1: Aggregate point clouds
-python scripts/aggregate_task1.py --scene scene-0103 --max-frames 40
+python scripts/task1.py --scene scene-0103 --max-frames 40
 
 # Task 2: Filter moving objects
 python scripts/task2.py --scene scene-0103 --max-frames 40
