@@ -1,2 +1,0 @@
-# PCD files are small enough to track normally
-*.pcd -filter -diff -merge
