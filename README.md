@@ -9,7 +9,9 @@ This project processes multi-sensor data from a vehicle equipped with a top-moun
 All sensors are intrinsically and extrinsically calibrated, time-synchronized, and supported by RTK correction data for GNSS accuracy. The implementation uses the nuScenes dataset and processes data without any manual annotations
 ## System Overview
 
-![GNSS Demo](Solomon_all_tasks_GNSS_demo.gif)
+<div align="center">
+  <img src="Solomon_all_tasks_GNSS_demo.gif" width="800"/>
+</div>
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
