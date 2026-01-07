@@ -13,7 +13,7 @@ All sensors are intrinsically and extrinsically calibrated, time-synchronized, a
   <img src="Solomon_all_tasks_GNSS_demo.gif" width="800"/>
 </div>
 
-<pre align="center">
+```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Complete Processing Pipeline                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -64,7 +64,7 @@ All sensors are intrinsically and extrinsically calibrated, time-synchronized, a
                     │ Colored static│
                     │ point cloud   │
                     └───────────────┘
-</pre>
+```
 
 ## Project Structure
 
@@ -102,7 +102,7 @@ Each lidar frame is transformed from the sensor coordinate system to the global 
 
 ### Coordinate Transformation Pipeline
 
-<div align="center"><pre>
+```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Task 1: Aggregation Flow                 │
 └─────────────────────────────────────────────────────────────┘
@@ -149,7 +149,7 @@ For each frame:
 │                      Save PCD File                          │
 │              outputs/taask1_scene-XXX.pcd                   │
 └─────────────────────────────────────────────────────────────┘
-</pre></div>
+```
 
 ### Formulation
 
@@ -242,7 +242,7 @@ Clusters identified as vehicle-like are removed from the aggregated point cloud,
 
 ### Processing Pipeline
 
-<div align="center"><pre>
+```
 ┌─────────────────────────────────────────────────────────────┐
 │              Task 2: Moving Object Filtering Flow           │
 └─────────────────────────────────────────────────────────────┘
@@ -314,7 +314,7 @@ Clusters identified as vehicle-like are removed from the aggregated point cloud,
 │  moving_mask: True for vehicle clusters                     │
 │  static_mask: ~moving_mask                                  │
 └─────────────────────────────────────────────────────────────┘
-</pre></div>
+```
 
 ### Formulation
 
@@ -441,7 +441,7 @@ The colorization process:
 
 ### Processing Pipeline
 
-<div align="center"><pre>
+```
 ┌─────────────────────────────────────────────────────────────┐
 │            Task 3: Point Cloud Colorization Flow            │
 └─────────────────────────────────────────────────────────────┘
@@ -529,7 +529,7 @@ The colorization process:
 │                                                             │
 │  Points with RGB colors from nearest visible camera         │
 └─────────────────────────────────────────────────────────────┘
-</pre></div>
+```
 
 ### Formulation
 
