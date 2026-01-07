@@ -13,6 +13,8 @@ All sensors are intrinsically and extrinsically calibrated, time-synchronized, a
   <img src="Solomon_all_tasks_GNSS_demo.gif" width="800"/>
 </div>
 
+<div align="center">
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Complete Processing Pipeline                 │
@@ -66,6 +68,8 @@ All sensors are intrinsically and extrinsically calibrated, time-synchronized, a
                     └───────────────┘
 ```
 
+</div>
+
 ## Project Structure
 
 ```
@@ -101,6 +105,8 @@ Each lidar frame is transformed from the sensor coordinate system to the global 
 2. Ego vehicle to global frame (using GNSS-INS pose data)
 
 ### Coordinate Transformation Pipeline
+
+<div align="center">
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -150,6 +156,8 @@ For each frame:
 │              outputs/taask1_scene-XXX.pcd                   │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+</div>
 
 ### Formulation
 
@@ -242,6 +250,8 @@ Clusters identified as vehicle-like are removed from the aggregated point cloud,
 
 ### Processing Pipeline
 
+<div align="center">
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │              Task 2: Moving Object Filtering Flow           │
@@ -315,6 +325,8 @@ Clusters identified as vehicle-like are removed from the aggregated point cloud,
 │  static_mask: ~moving_mask                                  │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+</div>
 
 ### Formulation
 
@@ -441,6 +453,8 @@ The colorization process:
 
 ### Processing Pipeline
 
+<div align="center">
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │            Task 3: Point Cloud Colorization Flow            │
@@ -530,6 +544,8 @@ The colorization process:
 │  Points with RGB colors from nearest visible camera         │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+</div>
 
 ### Formulation
 
